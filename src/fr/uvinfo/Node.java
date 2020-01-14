@@ -3,13 +3,13 @@ package fr.uvinfo;
 import java.util.ArrayList;
 
 public class Node {
-    int M; //order of the tree
-    boolean root; //true if this node is the root
-    ArrayList<Node> daughter = new ArrayList<Node>(); //tab of key in the node
-    ArrayList<Integer> key = new ArrayList<>(); //tab of daughter
-    Node mother;
+    private int M; //order of the tree
+    private boolean root; //true if this node is the root
+    private ArrayList<Node> daughter = new ArrayList<>(); //tab of key in the node
+    private ArrayList<Integer> key = new ArrayList<>(); //tab of daughter
+    private Node mother;
 
-    Node(int order){
+    public Node(int order){
         this.M = order;
         this.root=false;
     }
@@ -37,7 +37,7 @@ public class Node {
         return false;
     }
 
-    public void AddInNode(int value){
+    private void AddInNode(int value){
         for (int i = 0; i < key.size(); i++) {
             if (key.get(i) > value) {
                 key.add(i, value);
@@ -47,7 +47,7 @@ public class Node {
         key.add(key.size(), value);
     }
 
-    public void CheckTree(){
+    private void CheckTree(){
         if (mother.key.size() > 2 * M){
             Node daughter1 = new Node(M);
             Node daughter2 = new Node(M);
@@ -142,7 +142,7 @@ public class Node {
             return;
         }
 
-        if (key.size() >= 2 * M && daughter.size() == 0) { //making the lasts possibilities
+        if (key.size() >= 2 * M) { //making the lasts possibilities
             AddInNode(value);
             Node daughter1 = new Node(M);
             Node daughter2 = new Node(M);
