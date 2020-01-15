@@ -27,12 +27,17 @@ public class Main {
         test.Add(20);
         test.Add(21);
 
+        test.Del(3);
+        test.Del(6);
+        test.Del(4);
+        test.Del(5);
+        test.Del(1);
+        test.Del(2);
+        test.Del(7);
+        test.Del(8);
 
 
 
-
-
-        //System.out.println(test.daughter.get(0).daughter.get(0).mother.key.get(0));
 
         test.Print();
     }

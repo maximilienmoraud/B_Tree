@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 public class Node {
     private int M; //order of the tree
-    boolean root; //true if this node is the root
-    ArrayList<Node> daughter = new ArrayList<>(); //tab of key in the node
+    private boolean root; //true if this node is the root
+    private ArrayList<Node> daughter = new ArrayList<>(); //tab of key in the node
     private ArrayList<Integer> key = new ArrayList<>(); //tab of daughter
     private Node mother;
 
