@@ -199,15 +199,17 @@ public class Node {
         for (int i = 0; i < key.size(); i++){
             if (key.get(i) == value){
                 key.remove(i);
-                temp.daughter.addAll(daughter);
-                daughter.clear();
-                temp.key.addAll(key);
-                key.clear();
             }
         }
         for (int i = 0; i < daughter.size(); i++){
             daughter.get(i).Del(value);
-            daughter.get(i).root = false;
+        }
+        temp.daughter.addAll(daughter);
+        daughter.clear();
+        temp.key.addAll(key);
+        key.clear();
+        for (int i = 0; i < daughter.size(); i++){
+            temp.daughter.get(i).root = false;
         }
         InsertTree(temp);
     }

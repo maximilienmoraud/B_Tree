@@ -4,7 +4,7 @@ public class Main {
 
     public static void main(String[] args) {
 	// write your code here
-        Node test = new Node(2);
+        Node test = new Node(1);
         test.Add(1);
         test.Add(2);
         test.Add(3);
@@ -13,10 +13,10 @@ public class Main {
         test.Add(6);
         test.Add(7);
         test.Add(8);
-        test.Add(9);
+        test.Add(107);
         test.Add(10);
         test.Add(11);
-        test.Add(12);
+        test.Add(54);
         test.Add(13);
         test.Add(14);
         test.Add(15);
