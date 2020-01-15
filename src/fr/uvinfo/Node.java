@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 public class Node {
     private int M; //order of the tree
-    private boolean root; //true if this node is the root
-    private ArrayList<Node> daughter = new ArrayList<>(); //tab of key in the node
+    boolean root; //true if this node is the root
+    ArrayList<Node> daughter = new ArrayList<>(); //tab of key in the node
     private ArrayList<Integer> key = new ArrayList<>(); //tab of daughter
     private Node mother;
 
@@ -26,15 +26,16 @@ public class Node {
     }
 
     public boolean Search (int value){ // fonction searching value in the tree
-        for (Integer integer : key) {
-            if (value == integer) {
-                return true;
-            }
+        boolean result = false;
+        for (int i = 0; i < key.size(); i++) {
+            if (key.get(i) == value)
+                result = true;
         }
-        for (Node node : daughter) {
-            node.Search(value);
+        if (daughter.size() != 0) {
+            for (int j = 0; j < daughter.size(); j++)
+                result = result || daughter.get(j).Search(value);
         }
-        return false;
+        return result;
     }
 
     private void AddInNode(int value){
@@ -47,7 +48,7 @@ public class Node {
         key.add(key.size(), value);
     }
 
-    private void CheckTree(){
+    private void CheckTree(){ // replacing the tree in a correct form
         if (mother.key.size() > 2 * M){
             Node daughter1 = new Node(M);
             Node daughter2 = new Node(M);
@@ -92,10 +93,10 @@ public class Node {
                     if (mother.mother.daughter.get(i).key.get(mother.mother.daughter.get(i).key.size()-1) > daughter1.key.get(0)){
                         mother.mother.daughter.add(i, daughter1);
                         mother.mother.daughter.add(i + 1, daughter2);
-                        for (int j = 0; i < daughter1.daughter.size(); i++) {
+                        for (int j = 0; j < daughter1.daughter.size(); j++) {
                             daughter1.daughter.get(j).mother=mother.mother.daughter.get(i);
                         }
-                        for (int j = 0; i < daughter2.daughter.size(); i++) {
+                        for (int j = 0; j < daughter2.daughter.size(); j++) {
                             daughter2.daughter.get(j).mother=mother.mother.daughter.get(i+1);
                         }
                         mother.CheckTree();
@@ -118,6 +119,7 @@ public class Node {
     public void Add (int value) { // fonction adding value in the tree
         if (Search(value)) { //checking the existancy of the key
             System.out.println("The key is already in the tree \n");
+            return;
         }
 
         if (key.size() == 0 && daughter.size() == 0) { //creating the part of the tree if it doesn't exist yet
@@ -169,8 +171,6 @@ public class Node {
             daughter2.mother = mother;
             for (int i = 0; i < mother.key.size(); i++){
                 if (mother.key.get(i) == temp) {
-                    //System.out.println(mother.daughter.get(0).key.get(0));
-
                     mother.daughter.add(i, daughter1);
                     mother.daughter.add(i+1, daughter2);
                     mother.daughter.remove(i + 2);
@@ -178,6 +178,38 @@ public class Node {
             }
             CheckTree();
         }
+    }
+
+    private void InsertTree (Node tree){
+        for (int i = 0; i < tree.key.size(); i++){
+            Add(tree.key.get(i));
+        }
+        for (int i = 0; i < tree.daughter.size(); i++){
+            InsertTree(tree.daughter.get(i));
+        }
+    }
+
+
+    public void Del (int value){
+       if (!Search(value) && root) { //checking the existancy of the key
+           System.out.println("The key isn't in the tree \n");
+           return;
+       }
+        Node temp = new Node(M);
+        for (int i = 0; i < key.size(); i++){
+            if (key.get(i) == value){
+                key.remove(i);
+                temp.daughter.addAll(daughter);
+                daughter.clear();
+                temp.key.addAll(key);
+                key.clear();
+            }
+        }
+        for (int i = 0; i < daughter.size(); i++){
+            daughter.get(i).Del(value);
+            daughter.get(i).root = false;
+        }
+        InsertTree(temp);
     }
 }
 
