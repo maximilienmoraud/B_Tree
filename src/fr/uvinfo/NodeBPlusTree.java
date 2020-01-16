@@ -6,6 +6,7 @@ class Key{
     int value;
     boolean heritate;
     boolean alreadyheritate;
+    Key next;
 
     public Key(){
         heritate = false;
@@ -132,7 +133,7 @@ public class NodeBPlusTree {
         }
     }
 
-    public void Setup (){
+    private void Setup (){
         for (int i = 0; i < key.size(); i++) {
             if (!key.get(i).alreadyheritate && daughter.size() != 0){
                 key.get(i).alreadyheritate = true;
@@ -149,6 +150,20 @@ public class NodeBPlusTree {
         for (int i = 0; i < daughter.size(); i++) {
             if (daughter.size() != 0){
                 daughter.get(i).Setup();
+            }
+        }
+        //Setnext();
+    }
+
+    private void Setnext () {
+        if (daughter.get(0).daughter.size() == 0){
+            for (int i = 0; i < daughter.size(); i++) {
+                daughter.get(i).key.get(daughter.get(i).key.size()-1).next = daughter.get(i+1).key.get(0);
+            }
+        }
+        if (daughter.size() != 0){
+            for (int i = 0; i < daughter.size(); i++) {
+                daughter.get(i).Setnext();
             }
         }
     }
