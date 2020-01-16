@@ -2,33 +2,47 @@ package fr.uvinfo;
 
 import java.util.ArrayList;
 
-public class Node {
-    private int M; //order of the tree
-    private boolean root; //true if this node is the root
-    private ArrayList<Node> daughter = new ArrayList<>(); //tab of key in the node
-    private ArrayList<Integer> key = new ArrayList<>(); //tab of daughter
-    private Node mother;
+class Key{
+    int value;
+    boolean heritate;
+    boolean alreadyheritate;
 
-    public Node(int order){
+    public Key(){
+        heritate = false;
+        alreadyheritate = false;
+    }
+}
+
+
+public class NodeBPlusTree {
+    private int M; //order of the tree ( b = 2*M+1 )
+    private boolean root; //true if this node is the root
+    private ArrayList<NodeBPlusTree> daughter = new ArrayList<>(); //tab of key in the node
+    private ArrayList<Key> key = new ArrayList<>(); //tab of daughter
+    private NodeBPlusTree mother;
+
+    public NodeBPlusTree(int order){
         this.M = order;
         this.root=false;
     }
 
     public void Print (){
         System.out.println("Node :");
-        for (Integer integer : key) {
-            System.out.println(integer);
+        for (int i = 0; i < key.size(); i++) {
+            System.out.println(key.get(i).value);
         }
-        for (Node node : daughter) {
+        for (NodeBPlusTree nodeBPlusTree : daughter) {
             System.out.println("\n");
-            node.Print();
+            nodeBPlusTree.Print();
         }
     }
+
+
 
     public boolean Search (int value){ // fonction searching value in the tree
         boolean result = false;
         for (int i = 0; i < key.size(); i++) {
-            if (key.get(i) == value)
+            if (key.get(i).value == value)
                 result = true;
         }
         if (daughter.size() != 0) {
@@ -39,20 +53,22 @@ public class Node {
     }
 
     private void AddInNode(int value){
+        Key temp = new Key();
+        temp.value = value;
         for (int i = 0; i < key.size(); i++) {
-            if (key.get(i) > value) {
-                key.add(i, value);
+            if (key.get(i).value > value) {
+                key.add(i, temp);
                 return;
             }
         }
-        key.add(key.size(), value);
+        key.add(key.size(), temp);
     }
 
     private void CheckTree(){ // replacing the tree in a correct form
         if (mother.key.size() > 2 * M){
-            Node daughter1 = new Node(M);
-            Node daughter2 = new Node(M);
-            int temp = (mother.key.get(mother.key.size()/2));
+            NodeBPlusTree daughter1 = new NodeBPlusTree(M);
+            NodeBPlusTree daughter2 = new NodeBPlusTree(M);
+            Key temp = (mother.key.get(mother.key.size()/2));
             for (int i = 0; i < mother.key.size() / 2; i++) {
                 daughter1.key.add(mother.key.get(i));
             }
@@ -90,7 +106,7 @@ public class Node {
                 mother.mother.key.add(temp);
                 mother.daughter.clear();
                 for (int i = 0; i < mother.mother.daughter.size(); i++) {
-                    if (mother.mother.daughter.get(i).key.get(mother.mother.daughter.get(i).key.size()-1) > daughter1.key.get(0)){
+                    if (mother.mother.daughter.get(i).key.get(mother.mother.daughter.get(i).key.size()-1).value > daughter1.key.get(0).value){
                         mother.mother.daughter.add(i, daughter1);
                         mother.mother.daughter.add(i + 1, daughter2);
                         for (int j = 0; j < daughter1.daughter.size(); j++) {
@@ -116,7 +132,36 @@ public class Node {
         }
     }
 
+    public void Setup (){
+        for (int i = 0; i < key.size(); i++) {
+            if (!key.get(i).alreadyheritate && daughter.size() != 0){
+                key.get(i).alreadyheritate = true;
+                Key temp = new Key();
+                temp.value = key.get(i).value;
+                temp.heritate = true;
+                if (daughter.get(i+1).daughter.size()==0){
+                    daughter.get(i+1).key.add(0, temp);
+                }else{
+                    daughter.get(i+1).Godown(temp);
+                }
+            }
+        }
+        for (int i = 0; i < daughter.size(); i++) {
+            if (daughter.size() != 0){
+                daughter.get(i).Setup();
+            }
+        }
+    }
+
+    private void Godown (Key temp){
+        if (daughter.get(0).daughter.size() == 0){
+            daughter.get(0).key.add(0, temp);
+        }else Godown(temp);
+    }
+
     public void Add (int value) { // fonction adding value in the tree
+        Key tempbis = new Key();
+        tempbis.value = value;
         if (Search(value)) { //checking the existancy of the key
             System.out.println("The key is already in the tree \n");
             return;
@@ -124,7 +169,7 @@ public class Node {
 
         if (key.size() == 0 && daughter.size() == 0) { //creating the part of the tree if it doesn't exist yet
             root = true;
-            key.add(value);
+            key.add(tempbis);
             return;
         }
 
@@ -135,7 +180,7 @@ public class Node {
 
         if (daughter.size() != 0) { //set the key in the right daughter
             for (int i = 0; i < key.size(); i++) {
-                if (value < key.get(i)) {
+                if (value < key.get(i).value) {
                     daughter.get(i).Add(value);
                     return;
                 }
@@ -146,9 +191,9 @@ public class Node {
 
         if (key.size() >= 2 * M) { //making the lasts possibilities
             AddInNode(value);
-            Node daughter1 = new Node(M);
-            Node daughter2 = new Node(M);
-            int temp = (key.get(key.size()/2));
+            NodeBPlusTree daughter1 = new NodeBPlusTree(M);
+            NodeBPlusTree daughter2 = new NodeBPlusTree(M);
+            Key temp = (key.get(key.size()/2));
             for (int i = 0; i < key.size() / 2; i++) {
                 daughter1.key.add(key.get(i));
             }
@@ -166,11 +211,11 @@ public class Node {
             }
 
             key.clear();
-            mother.AddInNode(temp);
+            mother.AddInNode(temp.value);
             daughter1.mother = mother;
             daughter2.mother = mother;
             for (int i = 0; i < mother.key.size(); i++){
-                if (mother.key.get(i) == temp) {
+                if (mother.key.get(i).value == temp.value) {
                     mother.daughter.add(i, daughter1);
                     mother.daughter.add(i+1, daughter2);
                     mother.daughter.remove(i + 2);
@@ -179,39 +224,4 @@ public class Node {
             CheckTree();
         }
     }
-
-    private void InsertTree (Node tree){
-        for (int i = 0; i < tree.key.size(); i++){
-            Add(tree.key.get(i));
-        }
-        for (int i = 0; i < tree.daughter.size(); i++){
-            InsertTree(tree.daughter.get(i));
-        }
-    }
-
-
-    public void Del (int value){
-       if (!Search(value) && root) { //checking the existancy of the key
-           System.out.println("The key isn't in the tree \n");
-           return;
-       }
-        Node temp = new Node(M);
-        for (int i = 0; i < key.size(); i++){
-            if (key.get(i) == value){
-                key.remove(i);
-            }
-        }
-        for (int i = 0; i < daughter.size(); i++){
-            daughter.get(i).Del(value);
-        }
-        temp.daughter.addAll(daughter);
-        daughter.clear();
-        temp.key.addAll(key);
-        key.clear();
-        for (int i = 0; i < daughter.size(); i++){
-            temp.daughter.get(i).root = false;
-        }
-        InsertTree(temp);
-    }
 }
-
