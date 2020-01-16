@@ -159,6 +159,16 @@ public class NodeBPlusTree {
         }else Godown(temp);
     }
 
+    private void Goup (int value){
+        for (int i = 0; i < key.size(); i++){
+            if (key.get(i).value == value){
+                key.get(i).alreadyheritate = false;
+                return;
+            }
+        }
+        mother.Goup(value);
+    }
+
     public void Add (int value) { // fonction adding value in the tree
         Key tempbis = new Key();
         tempbis.value = value;
@@ -170,11 +180,13 @@ public class NodeBPlusTree {
         if (key.size() == 0 && daughter.size() == 0) { //creating the part of the tree if it doesn't exist yet
             root = true;
             key.add(tempbis);
+            Setup();
             return;
         }
 
-        if (key.size() < 2 * M && daughter.size() == 0) { //adding number in Node if he isn't full
+        if (key.size() < 2 * M + 1 && daughter.size() == 0) { //adding number in Node if he isn't full
             AddInNode(value);
+            Setup();
             return;
         }
 
@@ -186,27 +198,43 @@ public class NodeBPlusTree {
                 }
             }
             daughter.get(key.size()).Add(value);
+            Setup();
             return;
         }
 
-        if (key.size() >= 2 * M) { //making the lasts possibilities
+        if (key.size() >= 2 * M + 1 ) { //making the lasts possibilities
             AddInNode(value);
+            Key temp = new Key();
             NodeBPlusTree daughter1 = new NodeBPlusTree(M);
             NodeBPlusTree daughter2 = new NodeBPlusTree(M);
-            Key temp = (key.get(key.size()/2));
-            for (int i = 0; i < key.size() / 2; i++) {
-                daughter1.key.add(key.get(i));
-            }
-            for (int i = key.size() / 2 + 1; i < key.size(); i++) {
-                daughter2.key.add(key.get(i));
+            if (key.get(0).heritate){
+                mother.Goup(key.get(0).value);
+                temp = (key.get(key.size()/2));
+                for (int i = 1; i < key.size() / 2; i++) {
+                    daughter1.key.add(key.get(i));
+                }
+                for (int i = key.size() / 2 + 1; i < key.size(); i++) {
+                    daughter2.key.add(key.get(i));
+                }
+            }else{
+                temp = (key.get(key.size()/2 - 1));
+                for (int i = 0; i < key.size() / 2 - 1; i++) {
+                    daughter1.key.add(key.get(i));
+                }
+                for (int i = key.size() / 2; i < key.size(); i++) {
+                   daughter2.key.add(key.get(i));
+                }
             }
             if (root){
                 daughter1.mother = this;
                 daughter2.mother = this;
                 key.clear();
+                temp.heritate=false;
+                temp.alreadyheritate=false;
                 key.add(temp);
                 daughter.add(daughter1);
                 daughter.add(daughter2);
+                Setup();
                 return;
             }
 
@@ -223,5 +251,6 @@ public class NodeBPlusTree {
             }
             CheckTree();
         }
+        Setup();
     }
 }

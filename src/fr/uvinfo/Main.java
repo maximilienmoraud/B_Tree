@@ -13,10 +13,10 @@ public class Main {
         test.Add(6);
         test.Add(7);
         test.Add(8);
-        test.Add(107);
+        test.Add(9);
         test.Add(10);
         test.Add(11);
-        test.Add(54);
+        test.Add(12);
         test.Add(13);
         test.Add(14);
         test.Add(15);
@@ -24,9 +24,12 @@ public class Main {
         test.Add(17);
         test.Add(18);
         test.Add(19);
-        test.Add(20);
-        test.Add(21);
-        test.Setup();
+
+
+
+
+
+        //test.Setup();
 
 /*        test.Del(3);
         test.Del(6);
