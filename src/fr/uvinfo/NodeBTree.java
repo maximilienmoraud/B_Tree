@@ -179,7 +179,7 @@ public class NodeBTree {
             CheckTree();
         }
     }
-
+/* Delete function non optimized
     private void InsertTree (NodeBTree tree){
         for (int i = 0; i < tree.key.size(); i++){
             Add(tree.key.get(i));
@@ -212,6 +212,157 @@ public class NodeBTree {
             temp.daughter.get(i).root = false;
         }
         InsertTree(temp);
+    }
+ */
+
+    private void Del1 (int value){
+        for (int i = 0; i < key.size(); i++) {
+            if (key.get(i) == value){
+                Del2(value);
+            }
+        }
+        if (daughter.size() != 0) {
+            for (int j = 0; j < daughter.size(); j++){
+                daughter.get(j).Del1(value);
+            }
+        }
+    }
+
+    private void Del2 (int value){
+
+
+        if (!root && daughter.size() == 0 && key.size() > M){
+            for (int i = 0; i < key.size(); i++) {
+                if (key.get(i) == value){
+                    key.remove(i);
+                }
+            }
+            return;
+        }
+
+        if (!root && daughter.size() == 0 && key.size() <= M){
+            for (int i = 0; i < key.size(); i++) {
+                int b = 0;
+                if (key.get(i) == value){
+                    for (int j = 0; j < mother.key.size(); j++){
+                        if (value < mother.key.get(j)){
+                            b = j;
+                            break;
+                        }
+                        b = mother.key.size();
+                    }
+                    key.remove(i);
+                    NodeBTree temp = this;
+                    if (mother.key.size() > b){
+                        temp.AddInNode(mother.key.get(b));
+                        mother.key.remove(b);
+                        int a = mother.daughter.get(b+1).key.size();
+                        for (int j = 0; j < a; j++){
+                            temp.AddInNode(mother.daughter.get(b+1).key.get(j));
+                        }
+                        mother.daughter.remove(b);
+                        mother.daughter.remove(b);
+                        mother.daughter.add(b, temp);
+                        mother.daughter.get(b).mother=mother;
+                    }else{
+                        temp.AddInNode(mother.key.get(b-1));
+                        mother.key.remove(b-1);
+                        for (int j = 0; j < mother.daughter.get(b-1).key.size(); j++){
+                            temp.AddInNode(mother.daughter.get(b-1).key.get(j));
+                        }
+                        mother.daughter.remove(b);
+                        mother.daughter.remove(b-1);
+                        mother.daughter.add(b-1, temp);
+                        mother.daughter.get(b-1).mother=mother;
+                    }
+                }
+            }
+            if (mother.key.size() == 0){
+                NodeBTree daughter1 = new NodeBTree(M);
+                NodeBTree daughter2 = new NodeBTree(M);
+                int temp = (key.get(key.size()/2));
+                for (int i = 0; i < key.size() / 2; i++) {
+                    daughter1.key.add(key.get(i));
+                }
+                for (int i = key.size() / 2 + 1; i < key.size(); i++) {
+                    daughter2.key.add(key.get(i));
+                }
+                daughter1.mother=mother;
+                daughter2.mother=mother;
+                mother.key.add(temp);
+                mother.daughter.remove(0);
+                mother.daughter.add(daughter1);
+                mother.daughter.add(daughter2);
+            }
+            CheckTreeDel();
+            return;
+        }
+
+        if (daughter.size() != 0){
+            for (int i = 0; i < key.size(); i++){
+                if (key.get(i) == value){
+                    key.remove(i);
+                    key.add(i, daughter.get(i).key.get(daughter.get(i).key.size()-1));
+                    daughter.get(i).key.remove(daughter.get(i).key.size()-1);
+                }
+            }
+        }
+
+    }
+
+    private void CheckTreeDel(){
+        NodeBTree temp = new NodeBTree(M);
+        for (int i = 0; i < mother.key.size(); i++){
+            temp.AddInNode(mother.key.get(i));
+        }
+        int b = 0;
+        for (int i = 0; i < mother.daughter.size(); i++){
+            for (int j = 0; j < mother.daughter.get(i).key.size(); j++) {
+                temp.AddInNode(mother.daughter.get(i).key.get(j));
+            }
+            if (mother.daughter.get(i).key.size() > mother.key.size() + 1){
+                b = 1;
+            }
+        }
+        if (b == 1){
+            for (int i = 0; i < mother.key.size(); i++){
+                mother.key.remove(i);
+            }
+            for (int i = 0; i < M; i++){
+                mother.key.add(temp.key.get(((temp.key.size() / (M + 1))) * (i + 1) - 1));
+            }
+            int c = mother.daughter.size();
+            for (int i = 0; i < c; i++){
+                mother.daughter.remove(0);
+            }
+            int i = 0;
+            int k = 0;
+            for (int j = 0; j < temp.key.size(); j++){
+                if (temp.key.get(j) == mother.key.get(k)){
+                    i++;
+                    k++;
+                    if (k >= M){
+                        k--;
+                    }
+                }else {
+                    if (mother.daughter.size() < i + 1) {
+                        mother.daughter.add(new NodeBTree(M));
+                    }
+                    mother.daughter.get(i).AddInNode(temp.key.get(j));
+                }
+            }
+            for (int j = 0; j < mother.daughter.size(); j++){
+                mother.daughter.get(j).mother = this.mother;
+            }
+        }
+    }
+
+    public void Del (int value){
+        if (!Search(value) && root) { //checking the existancy of the key
+            System.out.println("The key isn't in the tree \n");
+            return;
+        }
+        Del1(value);
     }
 }
 

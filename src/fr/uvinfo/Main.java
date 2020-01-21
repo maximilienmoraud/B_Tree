@@ -4,7 +4,7 @@ public class Main {
 
     public static void main(String[] args) {
 	// write your code here
-        NodeBPlusTree test = new NodeBPlusTree(2);
+        NodeBTree test = new NodeBTree(2);
         test.Add(1);
         test.Add(2);
         test.Add(3);
@@ -18,12 +18,28 @@ public class Main {
         test.Add(11);
         test.Add(12);
         test.Add(13);
-        test.Add(14);
+        //test.Add(14);
         test.Add(15);
         test.Add(16);
-        test.Add(17);
+        //test.Add(17);
         test.Add(18);
-        test.Add(19);
+        //test.Add(19);
+
+
+        //test.Del(3);
+        //test.Del(2);
+
+
+        //test.Del(14);
+        //test.Del(19);
+        //test.Del(13);
+        //test.Del(16);
+        //test.Del(15);
+        //test.Del(17);
+
+
+
+
 
 
 
