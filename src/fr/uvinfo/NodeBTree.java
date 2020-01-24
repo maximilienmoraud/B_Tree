@@ -1,6 +1,7 @@
 package fr.uvinfo;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class NodeBTree {
     private int M; //order of the tree
@@ -27,13 +28,16 @@ public class NodeBTree {
 
     public boolean Search(int value) { // fonction searching value in the tree
         boolean result = false;
-        for (int i = 0; i < key.size(); i++) {
-            if (key.get(i) == value)
+        for (Integer integer : key) {
+            if (integer == value) {
                 result = true;
+                break;
+            }
         }
         if (daughter.size() != 0) {
-            for (int j = 0; j < daughter.size(); j++)
-                result = result || daughter.get(j).Search(value);
+            for (NodeBTree nodeBTree : daughter) {
+                result = result || nodeBTree.Search(value);
+            }
         }
         return result;
     }
@@ -201,8 +205,8 @@ public class NodeBTree {
                 key.remove(i);
             }
         }
-        for (int i = 0; i < daughter.size(); i++){
-            daughter.get(i).Del(value);
+        for (NodeBTree nodeBTree : daughter) {
+            nodeBTree.Del(value);
         }
         temp.daughter.addAll(daughter);
         daughter.clear();
@@ -217,8 +221,8 @@ public class NodeBTree {
 
 
     private void Del1(int value) {
-        for (int i = 0; i < key.size(); i++) {
-            if (key.get(i) == value) {
+        for (Integer integer : key) {
+            if (integer == value) {
                 Del2(value);
                 break;
             }
@@ -243,7 +247,7 @@ public class NodeBTree {
             return;
         }
 
-        if (!root && daughter.size() == 0 && key.size() <= M) {
+        if (!root && daughter.size() == 0) {
             for (int i = 0; i < key.size(); i++) {
                 int b = 0;
                 if (key.get(i) == value) {
@@ -387,15 +391,26 @@ public class NodeBTree {
                     daughter1.mother = mother;
                     daughter2.mother = mother;
                     mother.key.add(temp);
-                    mother.daughter.add(daughter1);
-                    mother.daughter.add(daughter2);
+                    Collections.sort(mother.key);
+                int a = 1;
+                for (int i = 0; i < mother.key.size(); i++){
+                        if (temp > mother.key.get(i)){
+                            mother.daughter.add(i, daughter1);
+                            mother.daughter.add(i + 1, daughter2);
+                            a = 0;
+                            break;
+                        }
+                    }
+                if (a == 1){
+                    mother.daughter.add(0, daughter1);
+                    mother.daughter.add(1, daughter2);
+                }
                 for (int i = 0; i < mother.daughter.size(); i++) {
                     if (mother.daughter.get(i).key.size() > M * 2){
                         mother.daughter.remove(i);
                     }
                 }
-                    return;
-                }
+            }
             }
 
         private void CheckTreeDel1(){
@@ -415,8 +430,8 @@ public class NodeBTree {
                         c ++;
                     }
                 }
-                for (int i = 0; i < c; i++){
-                    mother.mother.daughter.remove(0);
+                if (c > 0) {
+                    mother.mother.daughter.subList(0, c).clear();
                 }
                 if (mother.mother.mother != null){
                     mother.CheckTreeDel1();

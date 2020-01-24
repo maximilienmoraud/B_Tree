@@ -28,7 +28,12 @@ public class Main {
 
 
         test.Del(3);
-        //test.Del(2);
+        test.Del(2);
+        test.Del(7);
+        test.Del(1);
+        test.Del(4);
+        //test.Del(5);
+
 
 
         //test.Del(14);
