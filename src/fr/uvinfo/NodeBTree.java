@@ -180,7 +180,6 @@ public class NodeBTree {
         }
     }
 
-    // Delete function non optimized
     private void InsertTree(NodeBTree tree) {
         for (int i = 0; i < tree.key.size(); i++) {
             Add(tree.key.get(i));
@@ -190,8 +189,8 @@ public class NodeBTree {
         }
     }
 
-/*
-    public void Del (int value){
+
+    public void Delroot (int value){
        if (!Search(value) && root) { //checking the existancy of the key
            System.out.println("The key isn't in the tree \n");
            return;
@@ -214,8 +213,7 @@ public class NodeBTree {
         }
         InsertTree(temp);
     }
-    
- */
+
 
 
     private void Del1(int value) {
@@ -304,14 +302,18 @@ public class NodeBTree {
         }
 
         if (daughter.size() != 0) {
-            for (int i = 0; i < key.size(); i++) {
-                if (key.get(i) == value) {
+            if (!root){
+                for (int i = 0; i < key.size(); i++) {
+                    if (key.get(i) == value) {
                     key.remove(i);
                     key.add(i, daughter.get(i).key.get(daughter.get(i).key.size() - 1));
                     daughter.get(i).key.remove(daughter.get(i).key.size() - 1);
                 }
             }
-            CheckTreeDel();
+                CheckTreeDel();
+            }else {
+                Delroot(value);
+            }
         }
 
     }

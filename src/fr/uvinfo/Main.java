@@ -27,7 +27,7 @@ public class Main {
         //test.Add(19);
 
 
-        //test.Del(3);
+        test.Del(3);
         //test.Del(2);
 
 
