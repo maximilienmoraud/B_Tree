@@ -194,7 +194,7 @@ public class NodeBTree {
     }
 
 
-    public void Delroot (int value){
+    private void Delroot (int value){
        if (!Search(value) && root) { //checking the existancy of the key
            System.out.println("The key isn't in the tree \n");
            return;
