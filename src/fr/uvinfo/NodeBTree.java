@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class NodeBTree {
-    private int M; //order of the tree
-    private boolean root; //true if this node is the root
-    private ArrayList<NodeBTree> daughter = new ArrayList<>(); //tab of key in the node
-    private ArrayList<Integer> key = new ArrayList<>(); //tab of daughter
+    public int M; //order of the tree
+    public boolean root; //true if this node is the root
+    public ArrayList<NodeBTree> daughter = new ArrayList<>(); //tab of key in the node
+    public ArrayList<Integer> key = new ArrayList<>(); //tab of daughter
     private NodeBTree mother;
 
     public NodeBTree(int order) {
